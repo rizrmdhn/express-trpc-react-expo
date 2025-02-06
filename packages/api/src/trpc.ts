@@ -18,17 +18,35 @@ import { db } from "@rizrmdhn/db/client";
  * Isomorphic Session getter for API requests
  * - Expo requests will have a session token in the Authorization header
  * - Vite React requests will have a session token in the Authorization header
+ * - Web requests may have a session token in cookies
  */
-const isomorphicGetSession = async (headers: Headers) => {
-  // First try Authorization header
-  const authToken = headers.get("Authorization") ?? null;
+const isomorphicGetSession = async (
+  authToken: string | null,
+  headers?: Headers,
+) => {
   if (authToken) {
     const sessionToken = authToken.split(" ")[1];
-
     if (!sessionToken) return null;
 
     const { session, user } = await validateSessionToken(sessionToken);
     return { session, user };
+  }
+
+  // Try cookie if headers are present
+  if (headers) {
+    const cookieHeader = headers.get("Cookie");
+    if (cookieHeader) {
+      const sessionToken = cookieHeader
+        .split(";")
+        .map((c) => c.trim())
+        .find((c) => c.startsWith("token="))
+        ?.split("=")[1];
+
+      if (sessionToken) {
+        const { session, user } = await validateSessionToken(sessionToken);
+        return { session, user };
+      }
+    }
   }
 
   return null;
@@ -48,7 +66,7 @@ const isomorphicGetSession = async (headers: Headers) => {
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const authToken = opts.headers.get("Authorization") ?? null;
-  const session = await isomorphicGetSession(opts.headers);
+  const session = await isomorphicGetSession(authToken);
 
   return {
     session: session?.session ?? null,

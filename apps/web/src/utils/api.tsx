@@ -63,26 +63,26 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             transformer: SuperJSON,
             url: getBaseUrl() + "/trpc",
             headers: () => {
-              const headers = new Headers();
+              const headers = new Map<string, string>();
               headers.set("x-trpc-source", "vite-react-app");
 
               const token = getToken();
               if (token) headers.set("Authorization", `Bearer ${token}`);
 
-              return headers;
+              return Object.fromEntries(headers);
             },
           }),
           false: unstable_httpBatchStreamLink({
             transformer: SuperJSON,
             url: getBaseUrl() + "/trpc",
             headers: () => {
-              const headers = new Headers();
+              const headers = new Map<string, string>();
               headers.set("x-trpc-source", "vite-react-app");
 
               const token = getToken();
               if (token) headers.set("Authorization", `Bearer ${token}`);
 
-              return headers;
+              return Object.fromEntries(headers);
             },
           }),
         }),

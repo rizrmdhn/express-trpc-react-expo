@@ -27,6 +27,7 @@ import { Link, useNavigate } from "react-router";
 import { globalErrorToast, globalSuccessToast } from "@/lib/toast-utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import cookies from "js-cookie";
 
 export default function LoginForm() {
   const utils = api.useUtils();
@@ -40,6 +41,7 @@ export default function LoginForm() {
       globalSuccessToast("Login success");
 
       setToken(data.token);
+      cookies.set("token", data.token);
 
       navigate(`/`);
     },

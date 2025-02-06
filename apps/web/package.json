@@ -11,10 +11,10 @@
     "lint": "eslint",
     "preview": "vite preview",
     "sort:package": "pnpm dlx sort-package-json",
+    "tailwindcss:init": "pnpm dlx tailwindcss init -p",
     "typecheck": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --",
     "ui-add": "pnpm dlx shadcn@latest add",
-    "tailwindcss:init": "pnpm dlx tailwindcss init -p"
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -33,6 +33,7 @@
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.474.0",
     "next-themes": "^0.4.4",
     "react": "catalog:react18",
@@ -51,6 +52,7 @@
     "@rizrmdhn/eslint-config": "workspace:*",
     "@rizrmdhn/prettier-config": "workspace:*",
     "@rizrmdhn/tsconfig": "workspace:*",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "catalog:",
     "@types/react": "catalog:react18",
     "@types/react-dom": "catalog:react18",
