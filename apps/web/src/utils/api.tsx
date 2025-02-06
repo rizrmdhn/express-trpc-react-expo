@@ -1,58 +1,107 @@
-import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { QueryClientProvider } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
+import {
+  httpBatchLink,
+  loggerLink,
+  splitLink,
+  unstable_httpBatchStreamLink,
+} from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import superjson from "superjson";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { useState } from "react";
+import SuperJSON from "superjson";
 
 import type { AppRouter } from "@rizrmdhn/api";
-
-import { getBaseUrl } from "./base-url";
+import { createQueryClient } from "./query-client";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { env } from "@/env";
 import { getToken } from "./session-store";
 
-/**
- * A set of typesafe hooks for consuming your API.
- */
+let clientQueryClientSingleton: QueryClient | undefined = undefined;
+const getQueryClient = () => {
+  if (typeof window === "undefined") {
+    // Server: always make a new query client
+    return createQueryClient();
+  }
+  // Browser: use singleton pattern to keep the same query client
+  return (clientQueryClientSingleton ??= createQueryClient());
+};
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const api = createTRPCReact<AppRouter>();
-export { type RouterInputs, type RouterOutputs } from "@rizrmdhn/api";
 
 /**
- * A wrapper for your app that provides the TRPC context.
- * Use only in _app.tsx
+ * Inference helper for inputs.
+ *
+ * @example type HelloInput = RouterInputs['example']['hello']
  */
-export function TRPCProvider(props: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+export type RouterInputs = inferRouterInputs<AppRouter>;
+
+/**
+ * Inference helper for outputs.
+ *
+ * @example type HelloOutput = RouterOutputs['example']['hello']
+ */
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+export function TRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+
   const [trpcClient] = useState(() =>
     api.createClient({
       links: [
         loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === "development" ||
-            (opts.direction === "down" && opts.result instanceof Error),
-          colorMode: "ansi",
+          enabled: (op) =>
+            env.VITE_MODE === "development" ||
+            (op.direction === "down" && op.result instanceof Error),
         }),
-        httpBatchLink({
-          transformer: superjson,
-          url: `${getBaseUrl()}/trpc`,
-          headers: () => {
-            const headers = new Map<string, string>();
-            headers.set("x-trpc-source", "vite-react");
-
-            const token = getToken();
-            if (token) headers.set("Authorization", `Bearer ${token}`);
-
-            return Object.fromEntries(headers);
+        splitLink({
+          condition(op) {
+            return op.path.startsWith("auth.");
           },
+          true: httpBatchLink({
+            transformer: SuperJSON,
+            url: getBaseUrl() + "/trpc",
+            headers: () => {
+              const headers = new Headers();
+              headers.set("x-trpc-source", "vite-react-app");
+
+              const token = getToken();
+              if (token) headers.set("Authorization", `Bearer ${token}`);
+
+              return headers;
+            },
+          }),
+          false: unstable_httpBatchStreamLink({
+            transformer: SuperJSON,
+            url: getBaseUrl() + "/trpc",
+            headers: () => {
+              const headers = new Headers();
+              headers.set("x-trpc-source", "vite-react-app");
+
+              const token = getToken();
+              if (token) headers.set("Authorization", `Bearer ${token}`);
+
+              return headers;
+            },
+          }),
         }),
       ],
     })
   );
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <api.Provider client={trpcClient} queryClient={queryClient}>
         {props.children}
-      </QueryClientProvider>
-    </api.Provider>
+        {env.VITE_MODE === "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </api.Provider>
+    </QueryClientProvider>
   );
+}
+
+function getBaseUrl() {
+  return env.VITE_API_URL;
 }

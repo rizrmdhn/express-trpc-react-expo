@@ -2,7 +2,11 @@ import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
 export const env = createEnv({
-  server: {},
+  server: {
+    NODE_ENV: z
+      .enum(["development", "production", "test"])
+      .default("development"),
+  },
 
   /**
    * The prefix that client-side variables must have. This is enforced both at
@@ -11,6 +15,9 @@ export const env = createEnv({
   clientPrefix: "VITE_",
 
   client: {
+    VITE_MODE: z
+      .enum(["development", "production", "test"])
+      .default("development"),
     VITE_API_URL: z.string().url().default("http://localhost:3333"),
   },
 
@@ -18,7 +25,11 @@ export const env = createEnv({
    * What object holds the environment variables at runtime. This is usually
    * `process.env` or `import.meta.env`.
    */
-  runtimeEnv: import.meta.env,
+  runtimeEnv: {
+    NODE_ENV: import.meta.env.NODE_ENV,
+    VITE_MODE: import.meta.env.NODE_ENV,
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+  },
 
   /**
    * By default, this library will feed the environment variables directly to
