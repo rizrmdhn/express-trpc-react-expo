@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { loginSchema } from "@rizrmdhn/validators/auth.schema";
+import { registerSchema } from "@rizrmdhn/validators/auth.schema";
 import { useState } from "react";
 import type { z } from "zod";
 import {
@@ -22,24 +22,19 @@ import {
 } from "@/components/ui/form";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { api } from "@/utils/api";
-import { setToken } from "@/utils/session-store";
 import { Link, useNavigate } from "react-router";
 import { globalErrorToast, globalSuccessToast } from "@/lib/toast-utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function LoginForm() {
-  const utils = api.useUtils();
+export default function RegisterForm() {
   const [type, setType] = useState<"text" | "password">("password");
 
   const navigate = useNavigate();
 
-  const { mutate, status } = api.auth.login.useMutation({
-    onSuccess: async (data) => {
-      await utils.auth.authStatus.invalidate();
-      globalSuccessToast("Login success");
-
-      setToken(data.token);
+  const { mutate, status } = api.auth.register.useMutation({
+    onSuccess: () => {
+      globalSuccessToast("Register success");
 
       navigate(`/`);
     },
@@ -49,23 +44,23 @@ export default function LoginForm() {
   });
 
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  function handleSubmit(data: z.infer<typeof loginSchema>) {
+  function handleSubmit(data: z.infer<typeof registerSchema>) {
     mutate(data);
   }
 
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">Register</CardTitle>
         <CardDescription>
-          Enter your username below to login to your account
+          Enter your username below to register to your account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -130,15 +125,15 @@ export default function LoginForm() {
               {status === "pending" ? (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Sign In
+              Sign Up
             </Button>
           </form>
         </Form>
         <div className="mt-4 text-center">
           <h1 className="text-sm">
-            Don't have an account?{" "}
-            <Link to="/sign-up" className="hover:underline">
-              Sign up
+            Already have an account?{" "}
+            <Link to="/" className="hover:underline">
+              Sign in
             </Link>
           </h1>
         </div>
