@@ -17,17 +17,18 @@ import { db } from "@rizrmdhn/db/client";
 /**
  * Isomorphic Session getter for API requests
  * - Expo requests will have a session token in the Authorization header
- * - Next.js requests will have a session token in cookies
+ * - Vite React requests will have a session token in the Authorization header
  */
 const isomorphicGetSession = async (headers: Headers) => {
   // First try Authorization header
   const authToken = headers.get("Authorization") ?? null;
   if (authToken) {
     const sessionToken = authToken.split(" ")[1];
-    if (sessionToken) {
-      const { session, user } = await validateSessionToken(sessionToken);
-      return { session, user };
-    }
+
+    if (!sessionToken) return null;
+
+    const { session, user } = await validateSessionToken(sessionToken);
+    return { session, user };
   }
 
   return null;
@@ -50,7 +51,8 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await isomorphicGetSession(opts.headers);
 
   return {
-    session,
+    session: session?.session ?? null,
+    user: session?.user ?? null,
     db,
     token: authToken,
   };
@@ -135,13 +137,18 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+    if (!ctx.session || !ctx.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to access this resource",
+      });
     }
+
     return next({
       ctx: {
         ...ctx,
-        user: ctx.session.user,
+        session: ctx.session,
+        user: ctx.user,
       },
     });
   });

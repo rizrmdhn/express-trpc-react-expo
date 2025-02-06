@@ -1,6 +1,9 @@
+import type { Session, SessionUser } from ".";
 import { decrypt } from ".";
 
-export async function validateSessionToken(token: string) {
+export async function validateSessionToken(
+  token: string,
+): Promise<{ session: Session | null; user: SessionUser | null }> {
   try {
     const payload = await decrypt(token);
 
@@ -10,14 +13,14 @@ export async function validateSessionToken(token: string) {
       return { session: null, user: null };
     }
 
-    const session = {
+    const session: Session = {
       id: payload.jti ?? crypto.randomUUID(), // JWT ID claim or generate new
       userId: payload.id,
       expiresAt: new Date((payload.exp ?? 0) * 1000),
       createdAt: new Date((payload.iat ?? 0) * 1000).toISOString(),
     };
 
-    const user = {
+    const user: SessionUser = {
       id: payload.id,
       username: payload.username,
       createdAt: payload.createdAt,

@@ -6,7 +6,7 @@ export default function AuthenticatedRoutes() {
 
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />} />
     </Routes>
   );
 }

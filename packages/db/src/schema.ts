@@ -10,7 +10,7 @@ import {
 import { v7 as uuidv7 } from "uuid";
 
 export const createTable = pgTableCreator(
-  (name) => `express-trpc-next-expo_${name}`,
+  (name) => `express-trpc-react-expo_${name}`,
 );
 
 export const users = createTable(

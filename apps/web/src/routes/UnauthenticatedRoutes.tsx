@@ -6,7 +6,7 @@ export default function UnauthenticatedRoutes() {
 
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="/sign-in" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
     </Routes>
   );
 }

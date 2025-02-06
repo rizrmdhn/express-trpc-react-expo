@@ -11,5 +11,5 @@ export default {
   dialect: "postgresql",
   dbCredentials: { url: nonPoolingUrl },
   casing: "snake_case",
-  tablesFilter: ["express-trpc-next-expo_*"],
+  tablesFilter: ["express-trpc-react-expo_*"],
 } satisfies Config;
