@@ -4,24 +4,24 @@ This is a monorepo starter template using Express and tRPC with Turborepo.
 
 ## Apps
 
-- `mobile`: Expo app
-- `web`: Next.js app
-- `server`: Express server with tRPC
+- `mobile`: Expo mobile app for iOS/Android
+- `web`: React SPA web app
+- `server`: Express server with tRPC API
 
 ## Packages
 
 - `@rizrmdhn/api`: tRPC API implementation
-- `@rizrmdhn/db`: Drizzle database client
-- `@rizrmdhn/auth`: Authentication utilities
-- `@rizrmdhn/types`: Shared TypeScript types
-- `@rizrmdhn/validators`: Zod validators
+- `@rizrmdhn/db`: Database client using Drizzle ORM
+- `@rizrmdhn/auth`: Authentication utilities and middleware
+- `@rizrmdhn/types`: Shared TypeScript types/interfaces
+- `@rizrmdhn/validators`: Data validation with Zod
 
 ## Tooling
 
-- `@rizrmdhn/eslint-config`: ESLint configurations
-- `@rizrmdhn/prettier-config`: Prettier configurations
-- `@rizrmdhn/tailwind`: Tailwind CSS configs
-- `@rizrmdhn/tsconfig`: TypeScript configurations
+- `@rizrmdhn/eslint-config`: ESLint config and rules
+- `@rizrmdhn/prettier-config`: Prettier formatting rules
+- `@rizrmdhn/tailwind`: Tailwind CSS configuration
+- `@rizrmdhn/tsconfig`: TypeScript compiler settings
 
 ## Quick Start
 
@@ -29,39 +29,36 @@ This is a monorepo starter template using Express and tRPC with Turborepo.
 # Install dependencies
 pnpm install
 
-# Start development
+# Start development servers
 pnpm dev
 
-# Build
+# Build all apps
 pnpm build
 ```
 
 ## Key Features
 
-- Full-stack type safety with tRPC
-- Robust Express.js server
-- Authentication system
-- Code sharing between apps
-- Configured tooling:
-  - TypeScript
-  - ESLint
-  - Prettier
+- Type-safe API calls with tRPC
+- Shared components and utilities
+- JWT authentication
+- Monorepo workspace with pnpm
+- Modern tooling:
+  - TypeScript 5
+  - ESLint + Prettier
   - Tailwind CSS
-  - Turborepo for monorepo management
+  - Turborepo
 
-## Scripts
+## Development
 
-Common commands available in all apps and packages:
-
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm lint` - Lint code
+- `pnpm dev` - Start development
+- `pnpm build` - Production build
+- `pnpm lint` - Run ESLint
 - `pnpm format` - Format code
 - `pnpm typecheck` - Type check
 
-## Database Commands
+## Database
 
-- `pnpm db:generate` - Generate database migrations
-- `pnpm db:migrate` - Run database migrations
-- `pnpm db:push` - Push schema changes to database
-- `pnpm db:studio` - Open Prisma Studio
+- `pnpm db:generate` - Generate migrations
+- `pnpm db:migrate` - Run migrations
+- `pnpm db:push` - Push schema changes
+- `pnpm db:studio` - Open DB GUI
