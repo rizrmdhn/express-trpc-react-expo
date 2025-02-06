@@ -1,11 +1,11 @@
 {
-  "id": "1446610b-30c9-45dc-9f71-33d1da0db959",
+  "id": "91466730-4d36-456e-ae91-770b359c2aed",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.express-trpc-next-expo_users": {
-      "name": "express-trpc-next-expo_users",
+    "public.express-trpc-react-expo_users": {
+      "name": "express-trpc-react-expo_users",
       "schema": "",
       "columns": {
         "id": {
