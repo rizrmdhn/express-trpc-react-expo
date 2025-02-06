@@ -30,21 +30,6 @@ const isomorphicGetSession = async (headers: Headers) => {
     }
   }
 
-  // Then try cookie
-  const cookieHeader = headers.get("Cookie") ?? null;
-  if (cookieHeader) {
-    const sessionToken = cookieHeader
-      .split(";")
-      .map((c) => c.trim())
-      .find((c) => c.startsWith("token="))
-      ?.split("=")[1];
-
-    if (sessionToken) {
-      const { session, user } = await validateSessionToken(sessionToken);
-      return { session, user };
-    }
-  }
-
   return null;
 };
 
