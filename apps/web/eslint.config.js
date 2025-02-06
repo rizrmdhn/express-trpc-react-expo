@@ -1,14 +1,28 @@
-import baseConfig, { restrictEnvAccess } from "@rizrmdhn/eslint-config/base";
-import nextjsConfig from "@rizrmdhn/eslint-config/nextjs";
-import reactConfig from "@rizrmdhn/eslint-config/react";
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
 
-/** @type {import('typescript-eslint').Config} */
-export default [
+export default tseslint.config(
+  { ignores: ['dist'] },
   {
-    ignores: [".next/**"],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
   },
-  ...baseConfig,
-  ...reactConfig,
-  ...nextjsConfig,
-  ...restrictEnvAccess,
-];
+)
