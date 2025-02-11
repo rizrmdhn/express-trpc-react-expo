@@ -1,6 +1,6 @@
 import { api } from "@/utils/api";
-import AuthenticatedRoutes from "./AuthenticatedRoutes";
-import UnauthenticatedRoutes from "./UnauthenticatedRoutes";
+import AuthenticatedRoutes from "./authenticated-routes";
+import UnauthenticatedRoutes from "./unauthenticated-routes";
 
 export default function Routes() {
   const { data, isPending } = api.auth.authStatus.useQuery(undefined, {
