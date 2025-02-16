@@ -15,7 +15,7 @@ function useLogin() {
     onSuccess: async (data) => {
       setToken(data.token);
 
-      await utils.auth.me.invalidate();
+      await utils.auth.authStatus.invalidate();
       globalSuccessToast("Logged in successfully");
       router.replace("/(core)");
     },

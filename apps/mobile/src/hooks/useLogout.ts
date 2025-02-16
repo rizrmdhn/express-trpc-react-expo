@@ -23,7 +23,7 @@ function useLogout() {
       }
     }
 
-    await utils.auth.me.invalidate();
+    await utils.auth.authStatus.invalidate();
     setIsLoading(false);
     globalSuccessToast("Logged out successfully");
     router.replace("/(auth)");
