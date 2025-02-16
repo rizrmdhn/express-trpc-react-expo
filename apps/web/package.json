@@ -13,7 +13,7 @@
     "sort:package": "pnpm dlx sort-package-json",
     "tailwindcss:init": "pnpm dlx tailwindcss init -p",
     "typecheck": "tsc --noEmit",
-    "ui-add": "pnpm dlx shadcn@latest add",
+    "ui-add": "pnpm dlx shadcn@canary add",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {

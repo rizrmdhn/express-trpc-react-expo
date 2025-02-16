@@ -20,7 +20,7 @@ catalogs:
       version: 11.0.0-rc.730
     '@types/node':
       specifier: ^22.12.0
-      version: 22.12.0
+      version: 20.17.16
     eslint:
       specifier: ^9.19.0
       version: 9.19.0
@@ -2172,7 +2172,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.22.12':
     resolution: {integrity: sha512-i7mYb2s4RzlcLIsMewYtKol5rOIECOgLymAUfTwgvsAjg1r+11gmovsi3xdM0k1QiHmeJf0Wqz3sl7FJNsSKnw==}
